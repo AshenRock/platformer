@@ -14,6 +14,7 @@ public class Player extends PhysicsObject{
 	public float walkSpeed = 1000;
 	public float jumpPower = 1350;
 	public boolean isJumping = false;
+	public int jumpCount = 0;
 	
 
 	public Player(float x, float y, Level level) {
@@ -34,11 +35,13 @@ public class Player extends PhysicsObject{
 		if(PlayerInput.isRightKeyDown()) {
 			movementVector.x = +walkSpeed;
 		}
-		if(PlayerInput.isJumpKeyDown()) {
+		if(PlayerInput.isJumpKeyDown()&& isJumping == false) {
 			movementVector.y = -jumpPower;
+			jumpCount++;
+		}
+		if(jumpCount>=2){
 			isJumping = true;
 		}
-		
 	
 		if(collisionMatrix[BOT] != null){} 
 	}

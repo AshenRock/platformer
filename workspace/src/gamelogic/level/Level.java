@@ -47,6 +47,8 @@ public class Level {
 	private int tileSize;
 	private Tileset tileset;
 	public static float GRAVITY = 70;
+	public static boolean Touchinggas = false;
+
 
 	public Level(LevelData leveldata) {
 		this.leveldata = leveldata;
@@ -172,16 +174,14 @@ public class Level {
 				onPlayerDeath();
 			if (player.getCollisionMatrix()[PhysicsObject.RIG] instanceof Spikes)
 				onPlayerDeath();
-			for(Water w: waters){
-
-				if(w.getHitbox().isIntersecting(player.getHitbox())){
-					System.out.println("Touching water");
-					GRAVITY = 40;
+				boolean touchedWater = false;
+				Touchinggas = false;
+			for(Gas g: gases){
+				if(g.getHitbox().isIntersecting(player.getHitbox())){
+					Touchinggas = true;
+				}
 				
-				}
-				else{
-					GRAVITY = 70;
-				}
+			
 
 			}
 			for (int i = 0; i < flowers.size(); i++) {
@@ -211,7 +211,8 @@ public class Level {
 		}
 	}
 	
-
+//precondition: none of the calls are null, gas flowers are present, player is not null, addGas is called correctly
+//Postcondition: when player touches gas flower, gas is populated onto the map.
 private void addGas(int col, int row, Map map, int numSquaresToFill, ArrayList<Gas> placedThisRound) {Gas g = new Gas (col, row, tileSize, tileset.getImage("GasOne"), this, 0);
 		map.addTile(col, row, g);
 		numSquaresToFill--;
@@ -264,6 +265,7 @@ private void addGas(int col, int row, Map map, int numSquaresToFill, ArrayList<G
 			}
 			placedThisRound.remove(0);
 		}
+		gases.add(g);
 	}
 
 
@@ -272,6 +274,8 @@ private void addGas(int col, int row, Map map, int numSquaresToFill, ArrayList<G
 	//#############################################################################################################
 	//Your code goes here! 
 	//Please make sure you read the rubric/directions carefully and implement the solution recursively!
+	//precondition: water flowers exist on map, player is not null, water is called correctly
+	//Postcondition: when player touches water flower, water is populated on the map
 	private void water(int col, int row, Map map, int fullness) {
 		if(fullness == 4){
 			Water w = new Water (col, row, tileSize, tileset.getImage("Falling_water"), this, fullness);
@@ -296,6 +300,7 @@ private void addGas(int col, int row, Map map, int numSquaresToFill, ArrayList<G
 		
 
     if(row < 18){
+		if(map.getTiles()[col][row+1] != null){
 		if(!(map.getTiles()[col][row+1] instanceof Water) && !map.getTiles()[col][row+1].isSolid() && map.getTiles()[col][row+2].isSolid()){
 			water(col, row+1, map, 3);
 		}
@@ -323,6 +328,7 @@ private void addGas(int col, int row, Map map, int numSquaresToFill, ArrayList<G
 			}
 		}	
 	}
+}
 }
 		//wherever add water block
 		//waters.add(w);

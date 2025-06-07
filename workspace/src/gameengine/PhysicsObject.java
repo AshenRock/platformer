@@ -32,8 +32,13 @@ public class PhysicsObject extends GameObject{
 
 	@Override
 	public void update(float tslf) {
+		if(Level.Touchinggas == true){
+			System.out.println("hi");
+			movementVector.y += 20 * tslf;
+		}
+		if(Level.Touchinggas == false){
 		movementVector.y += (Level.GRAVITY * Level.GRAVITY) * tslf;
-
+		}
 		updateCollisionMatrix(tslf); // checking collision based on the new position -> current movement Vector
 
 		//Collision-handling 
