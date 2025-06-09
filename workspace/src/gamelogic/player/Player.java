@@ -14,7 +14,8 @@ public class Player extends PhysicsObject{
 	public float walkSpeed = 1000;
 	public float jumpPower = 1350;
 	public boolean isJumping = false;
-	public int jumpCount = 0;
+	public static int jumpCount = 0;
+	public boolean jumpwait = false;
 	
 
 	public Player(float x, float y, Level level) {
@@ -31,19 +32,34 @@ public class Player extends PhysicsObject{
 		movementVector.x = 0;
 		if(PlayerInput.isLeftKeyDown()) {
 			movementVector.x = -walkSpeed;
+			if(Level.Touchingwater){
+				movementVector.x = -walkSpeed * 2;
+			}
 		}
 		if(PlayerInput.isRightKeyDown()) {
 			movementVector.x = +walkSpeed;
+			if(Level.Touchingwater){
+				movementVector.x = +walkSpeed * 2;
+			}
 		}
-		if(PlayerInput.isJumpKeyDown()&& isJumping == false) {
+		if(PlayerInput.isJumpKeyDown()&& isJumping == false && jumpwait) {
 			movementVector.y = -jumpPower;
 			jumpCount++;
+			jumpwait = false;
+		}
+		if(PlayerInput.isJumpKeyDown() == false){
+			jumpwait = true;
 		}
 		if(jumpCount>=2){
 			isJumping = true;
 		}
-	
-		if(collisionMatrix[BOT] != null){} 
+		if  (jumpCount < 2){
+			isJumping = false;
+		}
+		
+		if(collisionMatrix[BOT] != null){
+			jumpCount = 0;
+		} 
 	}
 
 	@Override

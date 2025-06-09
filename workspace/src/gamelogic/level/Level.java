@@ -48,6 +48,7 @@ public class Level {
 	private Tileset tileset;
 	public static float GRAVITY = 70;
 	public static boolean Touchinggas = false;
+	public static boolean Touchingwater = false;
 
 
 	public Level(LevelData leveldata) {
@@ -174,7 +175,7 @@ public class Level {
 				onPlayerDeath();
 			if (player.getCollisionMatrix()[PhysicsObject.RIG] instanceof Spikes)
 				onPlayerDeath();
-				boolean touchedWater = false;
+				
 				Touchinggas = false;
 			for(Gas g: gases){
 				if(g.getHitbox().isIntersecting(player.getHitbox())){
@@ -183,6 +184,12 @@ public class Level {
 				
 			
 
+			}
+			Touchingwater = false;
+			for(Water w: waters){
+				if(w.getHitbox().isIntersecting(player.getHitbox())){
+					Touchingwater = true;
+				}
 			}
 			for (int i = 0; i < flowers.size(); i++) {
 				if (flowers.get(i).getHitbox().isIntersecting(player.getHitbox())) {
@@ -217,7 +224,7 @@ private void addGas(int col, int row, Map map, int numSquaresToFill, ArrayList<G
 		map.addTile(col, row, g);
 		numSquaresToFill--;
 		placedThisRound.add(g);
-
+		gases.add(g);
 		while(numSquaresToFill > 0 && placedThisRound.size() > 0){
 			//consider a spot thats in placedthisround.get(0)
 			Gas GAs = placedThisRound.get(0);
@@ -263,9 +270,15 @@ private void addGas(int col, int row, Map map, int numSquaresToFill, ArrayList<G
 				placedThisRound.add(new Gas (col - 1, row + 1, tileSize, tileset.getImage("GasOne"), this, 0));
 				numSquaresToFill--;
 			}
-			placedThisRound.remove(0);
+			if(numSquaresToFill == 0){
+			for(int i = 0; i< placedThisRound.size(); i++){
+				gases.add(placedThisRound.get(i));
+			}
+			
+			}
+			placedThisRound.remove(0);	
 		}
-		gases.add(g);
+		
 	}
 
 
@@ -279,21 +292,25 @@ private void addGas(int col, int row, Map map, int numSquaresToFill, ArrayList<G
 	private void water(int col, int row, Map map, int fullness) {
 		if(fullness == 4){
 			Water w = new Water (col, row, tileSize, tileset.getImage("Falling_water"), this, fullness);
+			waters.add(w);
 			map.addTile(col, row, w);
 			fullness = 3;
 		  }
 		  else if(fullness == 3){
 		 	Water w = new Water (col, row, tileSize, tileset.getImage("Full_water"), this, fullness);
+			waters.add(w);
 			map.addTile(col, row, w);
 		  }
 
 		  if(fullness == 2){
 		 	Water w = new Water (col, row, tileSize, tileset.getImage("Half_water"), this, fullness);
+			waters.add(w);
 			map.addTile(col, row, w);
 		  }
 
 		  if(fullness == 1){
 		 	Water w = new Water (col, row, tileSize, tileset.getImage("Quarter_water"), this, fullness);
+			waters.add(w);
 			map.addTile(col, row, w);
 		  }
 		  

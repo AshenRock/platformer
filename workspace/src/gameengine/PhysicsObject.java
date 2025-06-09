@@ -3,6 +3,7 @@ package gameengine;
 import gameengine.hitbox.RectHitbox;
 import gameengine.maths.Vector2D;
 import gamelogic.level.Level;
+import gamelogic.player.Player;
 import gamelogic.tiles.Tile;
 
 public class PhysicsObject extends GameObject{
@@ -33,7 +34,6 @@ public class PhysicsObject extends GameObject{
 	@Override
 	public void update(float tslf) {
 		if(Level.Touchinggas == true){
-			System.out.println("hi");
 			movementVector.y += 20 * tslf;
 		}
 		if(Level.Touchinggas == false){
@@ -46,6 +46,7 @@ public class PhysicsObject extends GameObject{
 		if(bot != null) {
 			position.y = bot.getHitbox().getY() - (hitbox.getOffsetY() + hitbox.getHeight());
 			movementVector.y = 0;
+			
 		}
 		Tile top = collisionMatrix[TOP];
 		if(top != null) {
